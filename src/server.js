@@ -1,7 +1,14 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({path: path.resolve(__dirname,".env")});
+
 import {GraphQLServer} from "graphql-yoga";
 import logger from "morgan";
 import schema from "./schema";
+import {sendSecretMail} from "./utils"; 
+
+
+sendSecretMail("asapz@naver.com","secret1234");
 
 const PORT = process.env.PORT || 4000;      //.env 의 PORT를 가져온다 만약 없다면 4000번으로 설정
 
