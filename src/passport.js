@@ -1,7 +1,4 @@
 // passport는 인증 관련한 모든 일을 한다. jwt토큰이나 쿠키에서 정보를 가져와 사용자 정보에 저장한다.
-import dotenv from "dotenv";
-import path from "path";
-dotenv.config({path: path.resolve(__dirname,".env")});
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { prisma } from "../generated/prisma-client";
@@ -25,5 +22,14 @@ const verifyUser = async (payload, done) => {
     }
   };
 
+  export const authenticateJwt = (req, res, next) =>
+  passport.authenticate("jwt", { sessions: false }, (error, user) => {
+    if (user) {
+      req.user = user;
+    }
+    next();
+  })(req, res, next);
+
 passport.use(new Strategy(jwtOptions, verifyUser));
+passport.initialize();
 

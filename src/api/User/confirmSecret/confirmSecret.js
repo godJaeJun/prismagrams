@@ -11,7 +11,7 @@ export default {
                 return generateToken(user.id);        
             }
             else{
-                throw Error("Wron email/secret conviation");
+                throw Error("Wrong email/secret conviation");
             }
         }
     }
