@@ -1,22 +1,23 @@
 import "./env";
-import {GraphQLServer} from "graphql-yoga";
+import { GraphQLServer } from "graphql-yoga";
 import logger from "morgan";
 import schema from "./schema";
-import "./passport"
+import "./passport";
 import { authenticateJwt } from "./passport";
-const PORT = process.env.PORT || 4000;      //.env 의 PORT를 가져온다 만약 없다면 4000번으로 설정
+import { isAuthenticated } from "./middlewares";
+import { uploadMiddleware, uploadController } from "./upload";
+
+const PORT = process.env.PORT || 4000;
 
 const server = new GraphQLServer({
-    schema,
-    context: ({ request }) => ({ request })
-  });
+  schema,
+  context: ({ request }) => ({ request, isAuthenticated })
+});
 
-// server.express 라고 하면 express 서버에 접근할 수 있다.
-// 미들웨어 추가
 server.express.use(logger("dev"));
 server.express.use(authenticateJwt);
+server.express.post("/api/upload", uploadMiddleware, uploadController);
 
 server.start({ port: PORT }, () =>
-    console.log(`✅ Server running on http://localhost:${PORT}`)
+  console.log(`✅ Server running on http://localhost:${PORT}`)
 );
-
